@@ -1,7 +1,6 @@
 #------------------------------------------------------------------------------
 #	BASICS
 #------------------------------------------------------------------------------
-CONDOR_HOST=$(FULL_HOSTNAME)
 UID_DOMAIN=$(FULL_HOSTNAME)
 FILESYSTEM_DOMAIN=$(FULL_HOSTNAME)
 
@@ -12,23 +11,29 @@ LOCK = $(LOG)
 ########################
 ## Daemons running on this host
 ########################
-DAEMON_LIST   = MASTER, COLLECTOR, NEGOTIATOR, SCHEDD
-#-- Limit session caching to ~12h
-SEC_DAEMON_SESSION_DURATION = 50000
+DAEMON_LIST   = MASTER, STARTD
 
 ############################################################
 ## Security config
 ############################################################
 #-- Authentication settings
 SEC_DEFAULT_AUTHENTICATION = REQUIRED
-SEC_DEFAULT_AUTHENTICATION_METHODS = FS,GSI
-SEC_READ_AUTHENTICATION    = OPTIONAL
-SEC_CLIENT_AUTHENTICATION  = OPTIONAL
+SEC_DEFAULT_AUTHENTICATION_METHODS = GSI
+
 DENY_WRITE         = anonymous@*
 DENY_ADMINISTRATOR = anonymous@*
 DENY_DAEMON        = anonymous@*
 DENY_NEGOTIATOR    = anonymous@*
 DENY_CLIENT        = anonymous@*
+
+ALLOW_WRITE         = condor_pool@buap.mx
+ALLOW_READ          = condor_pool@buap.mx
+ALLOW_ADMINISTRATOR = $(FULL_HOSTNAME)
+#ALLOW_DAEMON        = *buap.mx
+
+# Only the schedd needs this
+ALLOW_NEGOTIATOR    = condor_pool@buap.mx
+#ALLOW_CLIENT        = *buap.mx
 
 #--  Privacy settings
 SEC_DEFAULT_ENCRYPTION = OPTIONAL
@@ -40,13 +45,6 @@ SEC_CLIENT_ENCRYPTION = OPTIONAL
 
 # Adding the timeout to 20 seconds to fix a 
 # HTCondor related bug:
-SEC_DEFAULT_AUTHENTICATION_TIMEOUT = 20
+#SEC_DEFAULT_AUTHENTICATION_TIMEOUT = 20
 
-
-#ddavila: TODO
-#	- Review
-#-- With strong security, do not use IP based controls
-HOSTALLOW_WRITE = *
-ALLOW_WRITE = $(HOSTALLOW_WRITE)
-
-
+GSI_SKIP_HOST_CHECK_CERT_REGEX=/DC=org/DC=opensciencegrid/O=Open Science Grid/OU=Services/CN=submit-condor.buap.mx

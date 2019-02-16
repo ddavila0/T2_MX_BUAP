@@ -1,7 +1,0 @@
-[htcondor-stable-rhel7]
-name=HTCondor Development RPM Repository for Redhat Enterprise Linux 7
-baseurl=http://research.cs.wisc.edu/htcondor/yum/stable/rhel7
-enabled=1
-gpgcheck=0
-exclude=condor.i386
-priority=14

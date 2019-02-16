@@ -13,4 +13,10 @@ PREEMPT = FALSE
 #  (e.g. if a job is in the pre-empting stage for too long)
 KILL = FALSE
 
+NUM_CPUS=8
+NUM_SLOTS = 1
+
+NUM_SLOTS_TYPE_1 = 1
+SLOT_TYPE_1 = 100%
+SLOT_TYPE_1_PARTITIONABLE = False
 

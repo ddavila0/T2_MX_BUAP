@@ -1,0 +1,18 @@
+Universe   = vanilla
+
+Executable = sleep.sh
+Arguments  = 300
+
+Log        = sleep.$(Cluster).$(Process).log
+Output     = out/sleep.out.$(Cluster).$(Process)
+Error      = err/sleep.err.$(Cluster).$(Process)
+#requirements = stringListMember(GLIDEIN_CMSSite,DESIRED_Sites)
+
+should_transfer_files = YES
+RequestCpus = 1
+RequestMemory = 2000
+
+when_to_transfer_output = ON_EXIT
+
+Queue 8
+
