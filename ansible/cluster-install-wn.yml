@@ -1,0 +1,63 @@
+- hosts: workers
+  tasks:
+  - name: Add HTCondor repository 
+    yum_repository: 
+      name: htcondor-stable-el7
+      description: Stable repository for HTCondor rhel7
+      baseurl: http://research.cs.wisc.edu/htcondor/yum/stable/rhel7
+      gpgcheck: no
+      priority: 14
+
+  - name: Add OSG repository 
+    yum_repository: 
+      name: osg34-el7
+      description: OSG Software for rhel7
+      baseurl: http://repo.opensciencegrid.org/osg/3.4/el7/release/x86_64/
+      repo_gpgcheck: no
+      gpgcheck: no
+      priority: 15
+
+  - name: Install condor
+    yum: 
+      name: condor,condor-external-libs,condor-classads,condor-procd,condor-python
+      state: present
+      disablerepo: osg34-el7
+
+  - name: Install openssl
+    yum: 
+      name: openssl
+      state: present
+
+  - name: Install osg Certificate Authorities pack
+    yum: 
+      name: osg-ca-certs
+      state: present
+
+  - name: Copy condor config files
+    copy:
+      src: /Biza/ansible/files/condor/config.d_startd/
+      dest: /etc/condor/config.d
+
+  - name: create directory for condor_mapfile
+    file:
+      path: /etc/condor/certs
+      state: directory
+
+  - name: Copy condor mapfile
+    copy:
+      src: /Biza/ansible/files/condor/certs/condor_mapfile
+      dest: /etc/condor/certs
+
+  - name: Copy certs
+    copy:
+      src: "{{item.src}}"
+      mode: "{{item.mode}}"
+      dest: /etc/grid-security
+    with_items: 
+      - {src: '/Biza/ansible/files/condor/hostcerts/hostcert.pem', mode: '644'}
+      - {src: '/Biza/ansible/files/condor/hostcerts/hostkey.pem',  mode: '400'}
+
+  - name: Start condor service
+    service:
+      name: condor
+      state: started
